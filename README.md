@@ -1,2 +1,2 @@
-# Kam_Na_Strendu
+# Krok_v_pred
 Prohram na fltraciu strednych skol
