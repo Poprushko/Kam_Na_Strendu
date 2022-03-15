@@ -1,34 +1,23 @@
 :root
     {
+        --text-size-small: 20px;
+        --text-item-size: 25px;
+        --text-size-title-p2: 30px;
+        --text-size-big: 55px;
         --p1-gap: 15%;
         --p2-gap: 50px;
         --p2-padding: 4%;
         --main-padding: 8%;
         --logo-size: 200px;
         --sw-size: 35px;
-        --search-size: 40px;
+        --search-size: 30px;
         --search-len: 450px;
         --p1-text-mr: 20%; 
-        /*text*/
-        --white-text-color: #fff;
-        --text-hover-collor: #cf5557;
-        --black-text-collor: black;
-        --red-text-collor:#c63e40;
-        --text-size-small: 20px;
-        --text-item-size: 25px;
-        --text-size-title-p2: 30px;
-        --text-size-big: 55px;
         --text-font-family: 'Poppins', sans-serif;
-        /*buttons*/
-        --red-button-viac-cllor: #ca4c4d;
-        --red-button-collor-hover:#c63e40;
-        --red-button-collor:#a72628;
-        /*text*/
-
         --border-rad: 2px;
-        --border-color: black;
+        --gap-title-filters-mainpage: 13px;
     }
-    @media only screen and (max-width: 1300px) {#man {display: none} div{--p1-text-mr: 0px; } }
+    @media only screen and (max-width: 1500px) {#man {display: none} div{--p1-text-mr: 0px; } }
     
     @media only screen and (min-width: 3500px) {
         img{

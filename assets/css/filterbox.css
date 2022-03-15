@@ -1,0 +1,6 @@
+.check_box_filter:checked + .label_filter{
+    background-color: green;
+}
+.check_box_filter:not(:checked) + .label_filter{
+    background-color: red;
+}

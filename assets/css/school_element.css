@@ -1,0 +1,49 @@
+/* SChool Elements*/
+.school_element{
+    margin-top: 5px;
+    padding: 15px;
+    border: var(--border-rad) solid var(--border-color);
+    width: 1000px;
+    margin-inline: auto;
+}
+.school_element_main_grid{
+    display: grid;
+    
+    grid-template-columns: 160px auto max-content;
+    grid-row: max-content;
+}
+.school_element_second_grid{
+    display: grid;
+    grid-template-columns: auto max-content;
+    grid-gap: 10px;
+}
+.school_element_title_grid{
+    display: grid;
+    max-width: 820px;
+    grid-template-columns: 100%;
+    grid-template-rows: max-content max-content max-content;
+}
+.arrow-img{
+    height: 20px;
+    width: 20px;
+    transform:rotate(-90deg);
+}
+.school_element_logo{
+    height: 160px;
+    width: 160px;
+}
+.school_element_button_viac{
+    color: var(--button-text-color);
+    font-family: var(--text-font-family);
+    font-size: 20px;
+    background-color: var(--red-button-color-2);
+    border: 0px;
+    padding: 0.5em;
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+    height: 40px;
+}
+.school_element_button_viac:hover{
+    background-color: var(--red-button-hover-color-2);
+    
+}
