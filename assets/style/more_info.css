@@ -1,0 +1,21 @@
+.school_bar{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    margin-top: 60px;
+}
+
+.school_bar #logo{
+    width: 100px;
+}
+
+.school_bar #search{
+    margin-left: 500px;
+}
+
+.school_bar #theme_switch{
+    width: var(--sw-size);
+
+    margin-right: 50px;
+}

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Маршруты в React</title>
+    <link rel="stylesheet" href="http://127.0.0.1/assets/style/var.css">
+    <link rel="stylesheet" href="http://127.0.0.1/assets/style/more_info.css">
+</head>
+<body>
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <div id="app"></div>
+    <div id="blackBox"></div>
+
+    <script type="text/babel">
+    var p = new URLSearchParams(document.location.search);
+    function InfoBox(props){
+        return(
+            <div className={"info_box"}>
+                <div className={"info_box_title"}>{props.title}</div>
+                <div className={"info_box_info_container"}>
+                    {props.info.map((message) => <a className={"info_box_info"}>-{message}</a>)}
+                </div>
+            </div>
+        );
+    }
+    
+    function AboutSchool(props){
+        React.useEffect(() => { document.title = props.name; },[]);
+        return (
+            <div>
+                <div className={"school_bar"}>
+                    <img id={"logo"} src={`http://127.0.0.1/assets/img/logo.svg`}/>
+                    <input id={"search"} className={"text search"} placeholder={"VYHLADAT SKOLU"}/>
+                    <img id={"theme_switch"} src={"http://127.0.0.1/assets/img/theme.svg"}/>
+                </div>
+
+                <div className={'school_title_main_grid'}>
+                    <img src={"http://127.0.0.1/"+props.logo} className={"school_element_logo"}/>
+                    <div className={"school_title_info_grid"}>
+                        <a className={"school_title_info_name"}>{props.name}</a>
+                        <a className={"school_title_info_rate"}>{props.rate}</a>
+                        <div className={"school_title_info_contact_grid"}>
+                            <div className={"school_title_info_contact_container"}><img src="http://127.0.0.1/res/img/phone.XXX"/><a>{props.phone}</a></div>
+                            <div className={"school_title_info_contact_container"}><img src="http://127.0.0.1/res/img/email.XXX"/><a>{props.email}</a></div>
+                            <div className={"school_title_info_contact_container"}><img src="http://127.0.0.1/res/img/location.XXX"/><a>{props.address}</a></div>      
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div className={"school_info_info"}>
+                        {props.info}
+                    </div>
+                    <div>
+                        <InfoBox title={"ŠTUDIJNÉ ODBORY"} info={props.odbory} />
+                        <InfoBox title={"ODVETIE"} info={props.odvetie} />
+                    </div>
+                </div>
+
+                <a className={"school_info_website"}>{props.website}</a>
+
+            </div>
+        );
+    }
+    ReactDOM.render(
+        //title logo phone email address info
+        <AboutSchool name={p.get("title")} phone={p.get("phone")} email={p.get("email")} address={p.get("address")} info={p.get("info")} rate={p.get("rate")} odbory={p.getAll("odbory")} odvetie={p.getAll("odvetie")} logo={p.getAll("logo")} />,
+        document.getElementById("app")
+    )
+    </script>
+</body>
+</html>
