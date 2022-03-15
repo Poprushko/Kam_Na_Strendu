@@ -6,13 +6,13 @@ var connect = require('./connect');
 //#endregion
 
 //#region Connect to MySQOL
-/*
-const connection = mysql.createConnection({
-  host: connect.host,
-  user: connect.user,
-  database: connect.database,
-  password: connect.password
-});
+
+// const connection = mysql.createConnection({
+//   host: connect.host,
+//   user: connect.user,
+//   database: connect.database,
+//   password: connect.password
+// });
 
 //#endregion
 
@@ -25,7 +25,7 @@ function db_req(req){
     	console.log(fields); // мета-данные полей 
 });
 }
-//*/
+//
 const app = express();
 
 app.use("/assets/:uid/:file", function(req, res, next){
