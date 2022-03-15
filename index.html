@@ -33,7 +33,10 @@
             <div>
                 <div className={"school_bar"}>
                     <img id={"logo"} src={`http://127.0.0.1/assets/img/logo.svg`}/>
-                    <input id={"search"} className={"text search"} placeholder={"VYHLADAT SKOLU"}/>
+                    <div className={"search"}>
+						<input type={"text"} id={"search-input"} className={"search-input"} placeholder={"Search"}/>
+                        <img className={"search-input-feedback"} src={"http://127.0.0.1/assets/img/search-glass.svg"}/>
+					</div>
                     <img id={"theme_switch"} src={"http://127.0.0.1/assets/img/theme.svg"}/>
                 </div>
 

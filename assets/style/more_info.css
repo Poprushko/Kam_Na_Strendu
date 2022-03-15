@@ -1,21 +1,59 @@
 .school_bar{
     display: flex;
+    align-items: center;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: space-between;
-    margin-top: 60px;
+    margin: 50px;
 }
 
 .school_bar #logo{
-    width: 100px;
+    width: 250px;
 }
 
-.school_bar #search{
-    margin-left: 500px;
+.search{
+    display: flex;
+    border-width: 2px;
+    border-color: #000;
+    border-style: solid;
+}
+
+.search .search-input {
+    padding-left: 20px;
+    padding-right: 40px;
+    width: 450px;
+    height: 45px;
+    padding-block: 5px;
+    font-family: var(--text-font-family);
+    font-size: large;
+    color: var(--text_color_dark);
+    border-width: 0;
+}
+
+.search .search-input-feedback {
+    padding-right: 10px;
+    width: 30px;
+    line-height: 27px;
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
+    /*filter: invert(1);*/
+}
+
+.search-input:focus{
+    outline: none !important;
+    border-color: #719ECE;
+    box-shadow: 0 0 10px #719ECE;
+    clip-path: inset(-5px 0px -5px -5px);
+}
+
+.search-input:focus + .search-input-feedback{
+    outline: none !important;
+    border-color: #719ECE;
+    box-shadow: 0 0 10px #719ECE;
+    clip-path: inset(-5px -5px -5px 0px);
 }
 
 .school_bar #theme_switch{
     width: var(--sw-size);
-
-    margin-right: 50px;
 }
