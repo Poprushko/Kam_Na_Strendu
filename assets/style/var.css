@@ -26,7 +26,7 @@
         /*text*/
 
         --border-rad: 2px;
-        --border-coll: black;
+        --border-color: black;
     }
     @media only screen and (max-width: 1300px) {#man {display: none} div{--p1-text-mr: 0px; } }
     

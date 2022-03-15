@@ -28,49 +28,48 @@
     }
     
     function AboutSchool(props){
+        //window.history.pushState({}, document.title, "/" + "");
         React.useEffect(() => { document.title = props.name; },[]);
         return (
             <div>
                 <div className={"school_bar"}>
                     <img id={"logo"} src={`http://127.0.0.1/assets/img/logo.svg`}/>
-                    <div className={"search"}>
+                    <div className={"search"}  onClick={() => {document.getElementById('search-input').focus()}}>
 						<input type={"text"} id={"search-input"} className={"search-input"} placeholder={"Search"}/>
                         <img className={"search-input-feedback"} src={"http://127.0.0.1/assets/img/search-glass.svg"}/>
 					</div>
                     <img id={"theme_switch"} src={"http://127.0.0.1/assets/img/theme.svg"}/>
                 </div>
 
-                <div className={'school_title_main_grid'}>
-                    <img src={"http://127.0.0.1/"+props.logo} className={"school_element_logo"}/>
-                    <div className={"school_title_info_grid"}>
-                        <a className={"school_title_info_name"}>{props.name}</a>
-                        <a className={"school_title_info_rate"}>{props.rate}</a>
-                        <div className={"school_title_info_contact_grid"}>
-                            <div className={"school_title_info_contact_container"}><img src="http://127.0.0.1/res/img/phone.XXX"/><a>{props.phone}</a></div>
-                            <div className={"school_title_info_contact_container"}><img src="http://127.0.0.1/res/img/email.XXX"/><a>{props.email}</a></div>
-                            <div className={"school_title_info_contact_container"}><img src="http://127.0.0.1/res/img/location.XXX"/><a>{props.address}</a></div>      
+                <div className={'school_title'}>
+                    <img src={"http://127.0.0.1/"+props.logo} className={"school_logo"}/>
+                    <div className={"flex_main_info"}>
+                        <div className={"main_info"}>
+                            <a className={"school_name"}>{props.name}</a>
+                            <div className={"school_rate"}><img src="http://127.0.0.1/assets/img/star.svg"/><a>{props.rate}</a></div>
+                            <div className={"school_contact"}>
+                                <div className={"school_contact_info"}><img src="http://127.0.0.1/assets/img/phone.svg"/><a>{"+"+props.phone.replace(" ", "")}</a></div>
+                                <div className={"school_contact_info"}><img src="http://127.0.0.1/assets/img/mail.svg"/><a>{props.email}</a></div>
+                                <div className={"school_contact_info"}><img src="http://127.0.0.1/assets/img/location.svg"/><a>{props.address}</a></div>      
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div>
-                    <div className={"school_info_info"}>
-                        {props.info}
-                    </div>
-                    <div>
+                <div className={"school_info"}>
+                    <div className={"school_info_about"} dangerouslySetInnerHTML={{__html: props.info}}></div>
+                    <div className={"school_info_odbory"}>
                         <InfoBox title={"ŠTUDIJNÉ ODBORY"} info={props.odbory} />
                         <InfoBox title={"ODVETIE"} info={props.odvetie} />
                     </div>
                 </div>
-
                 <a className={"school_info_website"}>{props.website}</a>
-
             </div>
         );
     }
     ReactDOM.render(
         //title logo phone email address info
-        <AboutSchool name={p.get("title")} phone={p.get("phone")} email={p.get("email")} address={p.get("address")} info={p.get("info")} rate={p.get("rate")} odbory={p.getAll("odbory")} odvetie={p.getAll("odvetie")} logo={p.getAll("logo")} />,
+        <AboutSchool name={p.get("title")} phone={p.get("phone")} email={p.get("email")} address={p.get("address")} info={p.get("info")} rate={p.get("rate")} odbory={p.getAll("odbory")} odvetie={p.getAll("odvetie")} logo={p.getAll("logo")} website={p.getAll("site")}/>,
         document.getElementById("app")
     )
     </script>
