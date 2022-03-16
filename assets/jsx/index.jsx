@@ -4,11 +4,6 @@ function Main(props){
     return(
         <div id={"main"}>
             <div className={"page"}>
-                <div className={"bar"}>
-                    <img id="logo" src={"/assets/img/logo.svg"}/>
-                    <div id="search_bar"></div>
-                    <div id="bar"></div>
-                </div>
                 <div class="text-p1">
                     <h1 class="text-big">Nahliadnite do svojej budúcnosti.</h1>
                     <a class=" text-small">S našou pomocou nájdete <b>strednú školu</b> podľa Vašich predstáv.</a><br/>

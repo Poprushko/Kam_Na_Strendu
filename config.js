@@ -5,5 +5,5 @@ module.exports = {
     database:"krok_vpred",
     password:"123456"
     },
-    port:"4444"
+    port:"80"
 }

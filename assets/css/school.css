@@ -1,58 +1,6 @@
 #app {
     margin-inline: 50px;
 }
-/*#region Bar */
-.school_bar{
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    margin-block: 50px;
-}
-
-.school_bar #logo{
-    width: 250px;
-}
-
-#search_bar .search-input {
-    padding-left: 20px;
-    padding-right: 40px;
-    width: 450px;
-    height: 45px;
-    padding-block: 5px;
-    font-size: large;
-    border-width: 0;
-}
-
-.search-input-img {
-    padding-right: 10px;
-    width: 30px;
-    line-height: 27px;
-    text-align: center;
-    pointer-events: none;
-    object-fit: none;
-}
-
-.search-input:focus{
-    outline: none !important;
-    border-color: var(--search-shadow-color);
-    box-shadow: 0 0 10px var(--search-shadow-color);
-    clip-path: inset(-5px 0px -5px -5px);
-}
-
-.search-input:focus + .search-input-img{
-    outline: none !important;
-    border-color: var(--search-shadow-color);
-    box-shadow: 0 0 10px var(--search-shadow-color);
-    clip-path: inset(-5px -5px -5px 0px);
-}
-
-.school_bar #theme_switch{
-    width: var(--sw-size);
-}
-/*#endregion*/
-
 /*#region School Title */
 .school_title_main_grid{
     margin-top: 3%;

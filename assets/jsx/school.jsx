@@ -15,15 +15,6 @@ function AboutSchool(props){
     React.useEffect(() => { document.title = props.name; },[]);
     return (
         <div>
-            <div className={"bar"}>
-                <img id={"logo"} src={"/assets/img/logo.svg"}/>
-                <div className={"search_container"}>
-                    <input className={"search-input"} placeholder={"VYHLADAT SKOLU"}/>
-                    <img className={"search-input-img img"} src={"/assets/img/search-glass.svg"}/>
-                </div>
-                <dvi id={"bar"}></dvi>
-            </div>
-            
             <div className={'school_title_main_grid'}>
                 <img src={props.logo} className={"school_element_logo"}/>
                 <div className={"school_title_info_grid "}>
@@ -55,6 +46,10 @@ function AboutSchool(props){
 }
 ReactDOM.render(
     //title logo phone email address info
-    <AboutSchool name={p.get("title")} phone={p.get("phone")} email={p.get("email")} address={p.get("address")} info={p.get("info")} rate={p.get("rate")} odbory={p.getAll("odbory")} odvetie={p.getAll("odvetie")} logo={p.getAll("logo")} website={p.getAll("site")} />,
+    <AboutSchool 
+    name={p.get("title")} phone={p.get("phone")}
+    email={p.get("email")} address={p.get("address")} 
+    info={p.get("info")} rate={p.get("rate")} odbory={p.getAll("odbory")}
+    odvetie={p.getAll("odvetie")} logo={p.getAll("logo")} website={p.getAll("site")} />,
     document.getElementById("app")
 );

@@ -11,6 +11,7 @@ function getData(){
         })
         .then(response => {
             res = response;
+
             ReactDOM.render(
                 <Search/>,
                 document.getElementById("app")
@@ -23,55 +24,55 @@ function getData(){
 function Search(props){
     var all_filters=[];
     var all_schools =  res;
-    const page = 0;
-    const page_size = 6;
+    const activ_page = 0;
+    const page_size = 3;
+    var [pages_list,setPages] = React.useState([[]]);
 
     function createPages(){
-        var pages_count = Math.ceil(all_schools.length / page_size);
-        var pages_list = [];
+        var pages_count = Math.ceil((all_schools.length-1)/ page_size);
+        var p_list = [];
+        console.log(all_schools);
+        console.log(all_schools.length);
         for(let i=0;i<pages_count;i++){
             var schools = all_schools;
-            var page = schools.splice((i*page_size), Math.min((((i+1)*12)-all_schools.length),page_size))
-            pages_list.push([page]);
+            var page = schools.splice((i*page_size), Math.min((schools.length-(i*page_size)),page_size));
+            console.log(page);
+            p_list.push(page);
         }
-        console.log(pages_count,pages_list)
+        pages_list = p_list;
+        console.log(pages_list);
+        // console.log(pages_count,p_list)
     }
-    React.useLayoutEffect(() => {
-        console.log("aaaaa");
-    },[page])
-    createPages();
-    React.useLayoutEffect(() => {
 
-    },[page]);
+    React.useLayoutEffect(() => {
+        console.log("a");
+    },[activ_page])
+
+    React.useLayoutEffect(() => {
+        createPages();
+    },[all_schools]);
     return(
-        <div>
-            <div className={"bar"}>
-                <img id="logo" src={"/assets/img/logo.svg"}/>
-                <input id={"search"} className={"search"} placeholder={"VYHLADAT SKOLU"}/>
-                <div id={"bar"}></div>
+        <div className="search_main_grid">
+            <div className="school_elements_grid">
+                <div className="selected_filters_text">{"         all_filters.join()          "}</div>
+                {
+                [[1,2],[3,4]][0].map((school) => <a>{school}</a>
+                    /*
+                var maps_href = school["maps_href"];
+                var internat = school["internat"];
+                    //*//*
+                <SchoolElement title={
+                    school["name"]} 
+                    rate={school["rate"]} logo={school["logo_href"]}
+                    phone={school["Phone"]} email={school["Email"]}
+                    address={`${school["street"]},${school["PSC"]},${school["second_name"]}`}
+                    info={school["info"]} odvetie={[]}
+                    website={school["website"]} 
+                    odbory={(school["Odbory"].slice(1,school["Odbory"].length)).split(";")}/>
+            //*/
+            )}
             </div>
-            <div className="search_main_grid">
-                <div className="school_elements_grid">
-                    <div className="selected_filters_text">{"         all_filters.join()          "}</div>
-                    {pages_list[0].map((message) =>{
-                    var school = schools[school_index];
-                    var address = `${school["street"]},${school["PSC"]},${school["second_name"]}`;
-                    var phone = school["Phone"];
-                    var email = school["Email"];
-                    var maps_href = school["maps_href"];
-                    var website = school["website"];
-                    var name = school["name"];
-                    var info = school["info"];
-                    var rate = school["rate"]
-                    var logo = school["logo_href"]
-                    var internat = school["internat"];
-                    var odbory = (school["Odbory"].slice(1,school["Odbory"].length)).split(";");
-
-                    //<SchoolElement title={} rate={} logo={} phone={} email={} addassetss={}info={} odvetie={} odbory={}/>
-                })}
-                </div>
-                <div className="Filters">
-                </div>
+            <div className="Filters">
             </div>
         </div>
     );
