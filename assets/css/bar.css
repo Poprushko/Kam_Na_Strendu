@@ -8,19 +8,24 @@
     width: var(--logo-size);
     object-fit: contain;
 }
+/* Search */
+.search-input:focus{
+    outline: none !important;
+}
+/**/
 /*Search Input*/
+/* comment *//**
 .search-input:focus{
     outline: none !important;
     border-color: var(--search-shadow-color);
     box-shadow: 0 0 10px var(--search-shadow-color);
-    clip-path: inset(-5px 0px -5px -5px);
+    clip-path: inset(-5px 0px -5px -5px); 
 }
-
 .search-input:focus + .search-input-img{
     outline: none !important;
-    border-color: var(--search-shadow-color);
-    box-shadow: 0 0 10px var(--search-shadow-color);
-    clip-path: inset(-5px -5px -5px 0px);
+    border-color: var(--search-shadow-color-neeedToFix);
+    box-shadow: 0 0 10px var(--search-shadow-color-neeedToFix);
+    clip-path: inset(-5px -5px -5px 0px); 
 }
 /**/
 .bar{
@@ -37,26 +42,33 @@
 .search_container{
     order: 0;
     display: flex;
-    border: var(--border-rad) solid var(--border-color);
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 5px;
+    padding: 5px;
+    padding-left: 10px;
+    width: max-content;
 }
 .search-input {
-    padding-left: 20px;
-    padding-right: 40px;
-    width: 450px;
-    height: 45px;
-    padding-block: 5px;
+    order: -1;
+    width: var(--search-width);
+    height: var(--search-height);
     font-size: large;
-    border-width: 0;
+    border-width: 0 ; 
+}
+.search-input:focus + .search_container{
+    border-color: var(--search-shadow-color);
+    box-shadow: 0 0 10px 1px var(--search-shadow-color);
+}
+.search-img {
+    order: 1;
+    width: 30px !important;
+    height: 30px !important;
+    pointer-events: none; /* значение none сообщает событию мыши проходить "через" элемент и обращаться к элементу, находящемуся "под" ним */
+    object-fit: none;
 }
 ::placeholder {
     color: var(--placeholder-text-color);
-}
-.search-input-img {
-    padding-right: 10px;
-    width: 30px;
-    line-height: 27px;
-    text-align: center;
-    pointer-events: none;
-    object-fit: none;
 }
 /**/

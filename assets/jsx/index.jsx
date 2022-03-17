@@ -1,13 +1,20 @@
-var li = ["Banskobystrický kraj","Bratislavský kraj","Košický kraj","Nitriansky kraj","Prešovský kraj","Trenčiansky kraj","Trnavský kraj","Žilinský kraj"];
-var li2 = ["Gymnázium","Hotelová akadémia","Konzervatórium","Obchodná akadémia","Odborná škola","Priemyselná škola","Zdravotnícka škola","Iné"];
+var kraj = ["Banskobystrický kraj","Bratislavský kraj","Košický kraj","Nitriansky kraj","Prešovský kraj","Trenčiansky kraj","Trnavský kraj","Žilinský kraj"];
+var druh = ["Gymnázium","Hotelová akadémia","Konzervatórium","Obchodná akadémia","Odborná škola","Priemyselná škola","Zdravotnícka škola","Iné"];
 function Main(props){
+    var searchOnClick = function(e){
+        if (e.keyCode === 13 && e.target.value!="") {
+            console.log(e.target.value);
+        }
+    }
+    // LOADER
+    React.useLayoutEffect(()=>{window.setTimeout(()=>{document.getElementById("loader").style.display="none"}, 400)},[]);
     return(
         <div id={"main"}>
             <div className={"page"}>
                 <div class="text-p1">
                     <h1 class="text-big">Nahliadnite do svojej budúcnosti.</h1>
                     <a class=" text-small">S našou pomocou nájdete <b>strednú školu</b> podľa Vašich predstáv.</a><br/>
-                    <input id="search" placeholder="VYHLADAT SKOLU"/>
+                    <Search searchEnter={searchOnClick}/>
                 </div>
                 <img src="/assets/img/man.png" id="man"></img>
             </div>
@@ -26,25 +33,26 @@ function Main(props){
         </div>
     );
 }
+//#region Elements
+
 //<SelectFilters/>
 function SelectFilters(props) {
     var selectedRegion = [];
     var selectedDruh = [];
     var send = function(){
-        console.log(selectedRegion.length);
-        console.log(selectedDruh.length);
-        window.location.assign(`/search?region=${(selectedRegion.length)?selectedRegion.join():""}&druh=${(selectedDruh.length)?selectedDruh.join():""}`);
+        window.location.assign(`/search?${(selectedRegion.length)?"region="+selectedRegion.join():""}${(selectedRegion.length&&selectedDruh.length)?"&":""}${(selectedDruh.length)?"druh="+selectedDruh.join():""}`);
     }
     return ( <div className={"test"}>
             <div className={'selectGridMain'}>
-                <SelOpt title={"KRAJ"} list={li} clicked={selectedRegion} img={"/assets/img/mesto.png"} tag={"sqe"} dir={"row"}/>
-                <SelOpt title={"DRUHY"} list={li2} clicked={selectedDruh} img={"/assets/img/kniha.png"} tag={"awd"} dir={"row-reverse"}/>
+                <SelOpt title={"KRAJ"} list={kraj} clicked={selectedRegion} img={"/assets/img/mesto.png"} tag={"sqe"} dir={"row"}/>
+                <SelOpt title={"DRUHY"} list={druh} clicked={selectedDruh} img={"/assets/img/kniha.png"} tag={"awd"} dir={"row-reverse"}/>
             </div>
             <button className={"buttonSearch"} onClick={send}>VYHĽADAŤ</button>
     </div>);
 }
 // <SelOpt title={} list={} clicked={} img={} tag={} dir={"row || row-reverse"}/>
 function SelOpt(props){
+    //                                                              document.getElementById("myButton").focus({preventScroll:false});
     var clicked = React.useRef(props.clicked);
     var list = React.useRef(props.list);
     var index = function(mes){ return(list.current.indexOf(mes)+props.tag);}
@@ -65,6 +73,31 @@ function SelOpt(props){
         </div>
     </div>);
 }
+// <Search searchEnter={Enter funtion}/>
+function Search(props){
+
+    const ref = React.useRef();
+    const [hasFocus, setFocus] = React.useState(false);
+
+    React.useEffect(() => {
+        if (document.hasFocus() && ref.current.contains(document.activeElement)) {
+          setFocus(true);
+        }
+      }, []);
+    
+    var c = {border:"var(--border-rad) solid var(--border-color)"}
+    var cf = {border:"var(--border-rad) solid var(--border-color)",boxShadow:"0 0 10px 1px var(--search-shadow-color)"}
+    return(
+        <div className={"search_container"} style={(hasFocus)?cf:c}  onClick={() => {document.getElementById('search-input').focus();}}>
+            <input id={"search-input"} className={"search-input"} placeholder={"VYHLADAT SKOLU"}
+            onKeyUp={props.searchEnter} 
+            ref={ref} onFocus={() => setFocus(true)} onBlur={() => setFocus(false) }/>
+            <img className={"search-img img"} src={"/assets/img/search-glass.svg"}/>
+        </div>
+    );
+}
+//#endregion
+
 ReactDOM.render(
     <Main/>,
     document.getElementById("app")

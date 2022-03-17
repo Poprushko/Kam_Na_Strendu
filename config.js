@@ -2,8 +2,8 @@ module.exports = {
     db_connect:{
     host:"127.0.0.1",
     user:"root",
-    database:"krok_vpred",
-    password:"123456"
+    password:"123456",
+    database:"krok_vpred"
     },
     port:"80"
 }

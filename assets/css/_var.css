@@ -10,8 +10,8 @@
         --main-padding: 8%;
         --logo-size: 200px;
         --sw-size: 35px;
-        --search-size: 30px;
-        --search-len: 450px;
+        --search-height: 30px;
+        --search-width: 450px;
         --p1-text-mr: 20%; 
         --text-font-family: 'Poppins', sans-serif;
         --border-rad: 2px;

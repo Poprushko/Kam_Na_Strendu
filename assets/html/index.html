@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="sk">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8"/>
     <title>Main Page</title>
-    <link rel="shortcut icon" href="#" />  
+    <link rel="shortcut icon" href="/assets/img/struct_logo.ico" />
      
-    <link href="/assets/css/_light_theme.css" rel="stylesheet" id="themeLink">
+    <link href="/assets/css/_auto_theme.css" rel="stylesheet" id="themeLink">
     <link href="/assets/css/_var.css" rel="stylesheet">
     <link href="/assets/css/_main.css" rel="stylesheet">
     <link href="/assets/css/bar.css" rel="stylesheet">
@@ -19,10 +19,29 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://unpkg.com/react-router-dom@6/umd/react-router-dom.development.js" crossorigin></script>
 <body>
+    <style>
+        #loader{
+            background-color: var(--loading-bg);
+            position: sticky;
+            top: 0%;
+            height: 100vh;
+            width: 100%;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .gif{
+            height: 200px;
+            width: 200px;
+        }
+    </style>
+    <div id="loader"><img class="img gif" src="/assets/img/loader.gif"></div>
+
     <div id="main_bar"></div>
     <div id="app"></div>
     <div id="blackBox"></div>
 </body>
-    <script type="text/babel" src="/assets/jsx/index.jsx"></script>
     <script type="text/babel" src="/assets/jsx/theme.jsx" id="bar_script" search-display="0"></script>
+    <script type="text/babel" src="/assets/jsx/index.jsx"></script>
 </html>

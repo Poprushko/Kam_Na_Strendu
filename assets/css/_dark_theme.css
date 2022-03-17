@@ -1,6 +1,7 @@
 :root
     {
         /* backgrounds */
+        --loading-bg: #000;
         --background-color: #1f1d1e;
         --search-background-color: #fff0;
         /* textes */
@@ -17,6 +18,8 @@
         --red-button-hover-color-1:#c63e40; /* ??? */
         --red-button-hover-color-2:#c63e40;
         /* borders */
+        --search-shadow-color: #719ece;
+        
         --border-color: #dedede;
     
 }

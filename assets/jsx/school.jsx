@@ -13,6 +13,8 @@ function InfoBox(props){
 function AboutSchool(props){
     //window.history.pushState({}, document.title, "/" + "");
     React.useEffect(() => { document.title = props.name; },[]);
+    // LOADER
+    React.useLayoutEffect(()=>{window.setTimeout(()=>{document.getElementById("loader").style.display="none"}, 1000)},[]);
     return (
         <div>
             <div className={'school_title_main_grid'}>

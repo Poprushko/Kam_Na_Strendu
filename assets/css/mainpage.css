@@ -100,33 +100,22 @@ input[type=checkbox]{
     width: 100%; 
     height: min-content;
 }
-#search{
-    font-size: var(--text-size-small)-1px;
-    font-weight: bold;
-    padding: 1em;
-    padding-left: 1em;
-    margin-top: 2.5em;
-    height: var(--search-size);
-    width: var(--search-len);
-    border: var(--border-rad) solid var(--border-color);
-    outline: none;
-}
-
 .text-big{
     margin: 0%;
     font-size: var(--text-size-big);
     color: var(--red-text-color);
 }
 .text-small{
-    margin-left: 3em;
     margin-bottom: 1em;
     font-size: var(--text-size-small);
     color: var(--red-text-color);
 }
 .text-p1{
     height: max-content;
+    display: flex;
     text-align: center;
     align-items: center;
+    flex-direction: column;
     margin-top: var(--p1-gap);
     margin-bottom: var(--p1-gap);
     margin-right: var(--p1-text-mr);

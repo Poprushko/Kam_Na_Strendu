@@ -1,91 +1,128 @@
+var p = new URLSearchParams(document.location.search);
 var res = [];
-function getData(){
-    const request = new Request(`/server?`,{method: 'GET'});
+
+function getData(listOfListOfParams){
+    var req="";
+    if(listOfListOfParams!=undefined){
+    for(var [key,value] in listOfListOfParams.entries()){
+        var pa = `${key}=${value.join(",")}`;
+    }}
+    const request = new Request(`/server?${req}`,{method: 'GET'});
     fetch(request)
         .then(response => {
             if (response.status === 200) {
             return response.json();
             } else {
-            throw new Error('Что-то пошло не так на сервере.');
+            throw new Error('Error');
             }
         })
         .then(response => {
             res = response;
 
             ReactDOM.render(
-                <Search/>,
+                <SearchPage />,
                 document.getElementById("app")
             );
         }).catch(error => {
             console.error(error);
     });
 }
-//getData();
-function Search(props){
+
+
+function SearchPage(props){
     var all_filters=[];
     var all_schools =  res;
-    const activ_page = 0;
+    const [activ_page,setActivPage] = React.useState(0)
     const page_size = 3;
     var [pages_list,setPages] = React.useState([[]]);
+    var [loading,setLoading] = React.useState(true);
+
+    //#region Filters
+    var [regions_list,setRegionList] = React.useState((p.get("region")!=null)? p.get("region").split(",").map((x)=>parseInt(x)):[]);
+    var [druh_list,setDruhList] = React.useState((p.get("druh")!=null)? p.get("druh").split(",").map((x)=>parseInt(x)):[]);
+    var regions = React.useRef(regions_list);
+
+    // ПЕРЕДАТЬ В ФТЛЬТРЫ ССЫЛКУ НА ЛИСТ
+
+    React.useEffect(()=>{console.log("send to db:","region=",regions_list,"druh=",druh_list);},[regions_list,druh_list]);
+    //#endregion
+    var reserFilters = function(e){
+        setRegionList([]);
+        setDruhList([]);
+    }
 
     function createPages(){
         var pages_count = Math.ceil((all_schools.length-1)/ page_size);
         var p_list = [];
-        console.log(all_schools);
-        console.log(all_schools.length);
+        //console.log(all_schools);
+        //console.log(all_schools.length);
         for(let i=0;i<pages_count;i++){
-            var schools = all_schools;
-            var page = schools.splice((i*page_size), Math.min((schools.length-(i*page_size)),page_size));
-            console.log(page);
+            var schools = Array.from(all_schools);
+            var page = schools.splice((i*page_size), Math.min((all_schools.length-(i*page_size)),page_size));
+            //console.log(page);
             p_list.push(page);
         }
-        pages_list = p_list;
-        console.log(pages_list);
+        setPages(Array.from(p_list));
+        //console.log(pages_list);
         // console.log(pages_count,p_list)
+        //console.log("p0",pages_list[activ_page]);
+        //console.log("p1",pages_list[activ_page][0]);
+        //console.log("p2",pages_list[activ_page].map((school) => school["school_id"]))
     }
-
+    /*
     React.useLayoutEffect(() => {
-        console.log("a");
-    },[activ_page])
-
-    React.useLayoutEffect(() => {
+        console.log("real:",activ_page,"/",pages_list.length,"normal:",activ_page+1,"/",pages_list.length,"logic:",activ_page,"/",pages_list.length-1);
+    },[activ_page]);
+    //*/
+    React.useEffect(() => {
         createPages();
+        setLoading(false);
     },[all_schools]);
+
+// SchoolEmlement Close after change Page
+    //Loader
+    React.useLayoutEffect(()=>{
+        window.setTimeout(()=>{document.getElementById("loader").style.display="none"}, 500)
+    },[loading]);
+
     return(
-        <div className="search_main_grid">
-            <div className="school_elements_grid">
-                <div className="selected_filters_text">{"         all_filters.join()          "}</div>
-                {
-                [[1,2],[3,4]][0].map((school) => <a>{school}</a>
-                    /*
-                var maps_href = school["maps_href"];
-                var internat = school["internat"];
-                    //*//*
-                <SchoolElement title={
-                    school["name"]} 
-                    rate={school["rate"]} logo={school["logo_href"]}
-                    phone={school["Phone"]} email={school["Email"]}
-                    address={`${school["street"]},${school["PSC"]},${school["second_name"]}`}
-                    info={school["info"]} odvetie={[]}
-                    website={school["website"]} 
-                    odbory={(school["Odbory"].slice(1,school["Odbory"].length)).split(";")}/>
-            //*/
-            )}
-            </div>
-            <div className="Filters">
+        <div>
+            <div className="search_main_grid">
+                <div className="school_elements_grid">
+                    <div className="s_es_inp"><Search/></div>
+                    <div className="pages">
+                        <img src={"/assets/img/arrow.svg"} className={"img page_arrow"} style={{transform:"rotate(-90deg)",order:"1"}} onClick={() => {setActivPage((activ_page<pages_list.length-1)?activ_page+1:activ_page)}}/>
+                        <img src={"/assets/img/arrow.svg"} className={"img page_arrow"} style={{transform:"rotate(90deg)",order:"-1"}} onClick={() => {setActivPage((activ_page>0)?activ_page-1:activ_page)}}/>
+                    </div>
+                    {pages_list[activ_page].map((school) => <SchoolElement title={
+                        school["name"]} 
+                        rate={school["rate"]} logo={school["logo_href"]}
+                        phone={school["Phone"]} email={school["Email"]}
+                        address={school["street"]+","+school["PSC"]+","+school["second_name"]}
+                        info={school["info"]} odvetie={[]}
+                        website={school["website"]} 
+                        odbory={(school["Odbory"].slice(1,school["Odbory"].length)).split(";")}/>
+                    )}
+                </div>
+                <div className={"filters_grid"}>
+                    <button className="zmazat_filtre" onClick={reserFilters}>VYMAZAŤ VŠETKY FILTRE</button>
+                    <FilterBox title={"FILTROVAŤ PODĽA ODBORU"} checkedList={[]} filterList={["filter 1","filter 2","filter 3","filter 4","filter 5"]} tag={"ua"}/>
+                    <FilterBox title={"FILTROVAŤ PODĽA KRAJA"} checkedList={regions} filterList={["Banskobystrický kraj","Bratislavský kraj","Košický kraj","Nitriansky kraj","Prešovský kraj","Trenčiansky kraj","Trnavský kraj","Žilinský kraj"]} tag={"will"}/>
+                    <FilterBox title={"FILTROVAŤ PODĽA DRUHU ŠKOLY"} checkedList={druh_list} filterList={["Gymnázium","Hotelová akadémia","Konzervatórium","Obchodná akadémia","Odborná škola","Priemyselná škola","Zdravotnícka škola","Iné"]} tag={"win"}/>
+                </div>
             </div>
         </div>
     );
-
-
 }
+//#region Elements
+
 //<SchoolElement title={} rate={} logo={} phone={} email={} addassetss={}info={} odvetie={} odbory={}/>
 function SchoolElement(props){
     const arrow = React.useRef(null);
     const [disp,changeDisp] = React.useState("none");
     var showInfo = function(e){
-        console.log(arrow.current.style.transform);
-        arrow.current.style.transform = (disp == "")? "rotate(-90deg)":"";
+        //console.log(arrow.current.style.transform);
+        arrow.current.style.transform = (disp == "")? "rotate(-90deg)":"rotate(0deg)";
         changeDisp((disp == "")? "none" : "");
     }
     var openSchool = function(){
@@ -95,23 +132,23 @@ function SchoolElement(props){
     }
     return(
         <div className={"school_element"}>
-            <div className={'school_element_main_grid'}>
-                <img src={""+props.logo} className={"school_element_logo"} onClick={showInfo}/>
-                <div className={"school_element_title_grid"}>
-                    <a className={'school_element_title'} onClick={showInfo}>{props.title}</a>
-                    <a className={"school_element_rate"} onClick={showInfo}>{props.rate}</a>
-                    <div style={{display:disp}}><a>{props.info}</a></div>
+            <div className={'s_e_main_grid'}>
+                <img src={props.logo} className={"s_e_logo"} onClick={showInfo}/>
+                <div className={"s_e_title_grid"}>
+                    <a className={'s_e_title'} onClick={showInfo}>{props.title}</a>
+                    <div className={"s_e_rate_container"}><img className={"img rate-img"} src="/assets/img/star.svg"/><a className={"s_e_rate"}>{props.rate.toFixed(1)}</a></div>
+                    <div style={{display:disp}}><a dangerouslySetInnerHTML={{__html: props.info}}></a></div>
                 </div>
-                <img src="/assets/img/arrow.svg" className={"arrow-img"} ref={arrow} onClick={showInfo}/>
+                <img src="/assets/img/arrow.svg" className={"arrow-img img"} ref={arrow} onClick={showInfo}/>
             </div>
-            <div style={{display:disp}} className={'school_element_second_grid'}>
+            <div style={{display:disp}} className={'s_e_second_grid'}>
                 <div className="school_element_info_grid">
-                    <div><img src="/assets/img/phone.png"/><a>{props.phone}</a></div>
-                    <div><img src="/assets/img/email.png"/><a>{props.email}</a></div>
-                    <div><img src="/assets/img/location.png"/><a>{props.addassetss}</a></div>
+                    <div className={"s_e_about_conatiner"}><img className={"img info_img"} src="/assets/img/phone.svg"/>   <a className={"about_text"}>{props.phone}</a></div>
+                    <div className={"s_e_about_conatiner"}><img className={"img info_img"} src="/assets/img/email.svg"/>   <a className={"about_text"}>{props.email}</a></div>
+                    <div className={"s_e_about_conatiner"}><img className={"img info_img"} src="/assets/img/location.svg"/><a className={"about_text"}>{props.address}</a></div>
                 </div>
                 <div style={{display:"flex",flexDirection:"column-reverse"}}>
-                    <button onClick={openSchool} className={"school_element_button_viac"}>VIAC INFORMÁCI</button>
+                    <button onClick={openSchool} className={"s_e_button_viac"}>VIAC INFORMÁCI</button>
                 </div>
             </div>
         </div>
@@ -140,12 +177,42 @@ function FilterBox(props){
     }
     var index = function(mes){ return(props.filterList.indexOf(mes)+props.tag); }
     return(
-        <div className={"info_box"}>
-            <div className={"info_box_title"}>{props.title}</div>
-            <div className={"info_box_info_container"}>
-                {props.filterList.map((el) => <div className="filter_element"><label className={"label_filter"} for={index(el)}>{el}</label><input className={"check_box_filter"} type="checkbox" id={index(el)} onClick={click}/></div>)}
+        <div className={"filter_box"}>
+            <div className={"filter_box_title"}>{props.title}</div>
+            <div className={"filter_box_info_container"}>
+                {props.filterList.map((el) => <div className="filter_element">
+                    <label className={"label_filter"} for={index(el)}>{el}</label>
+                    <input className={"check_box_filter"} type="checkbox" id={index(el)} onClick={click}/>
+                    </div>)}
             </div>
         </div>
     );
 }
+// <Search searchEnter={Enter funtion}/>
+function Search(props){
+
+    const ref = React.useRef();
+    const [hasFocus, setFocus] = React.useState(false);
+
+    React.useEffect(() => {
+        if (document.hasFocus() && ref.current.contains(document.activeElement)) {
+          setFocus(true);
+        }
+      }, []);
+    
+    var c = {border:"var(--border-rad) solid var(--border-color)"}
+    var cf = {border:"var(--border-rad) solid var(--search-shadow-color)",boxShadow:"0 0 10px 1px var(--search-shadow-color)"}
+    return(
+        <div className={"search_container"} style={(hasFocus)?cf:c}  onClick={() => {document.getElementById('search-input').focus();}}>
+            <input id={"search-input"} className={"search-input"} placeholder={"VYHLADAT SKOLU"}
+            onKeyUp={searchEnter} 
+            ref={ref} onFocus={() => setFocus(true)} onBlur={() => setFocus(false) }/>
+            <img className={"search-img img"} src={"/assets/img/search-glass.svg"}/>
+        </div>
+    );
+}
+
+//#endregion [p.get("region").split(","),p.get("druh").split(",")]
+console.log((p.get("region")!=null)? {"region":p.get("region").split(",")}:null);
+//console.log();
 window.onload=getData();
