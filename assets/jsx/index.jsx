@@ -62,6 +62,7 @@ function SelOpt(props){
         (is == -1)?clicked.current.push(el):clicked.current.splice(is, 1); 
     }
     const clss = {gap:"30px",display:"flex",flexDirection:props.dir,justifyContent:"center"};
+    //       SET onclick to div
     return(
     <div style={clss}>
         <img src={props.img} className={"img"}/>

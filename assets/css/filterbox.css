@@ -27,6 +27,7 @@
     color: var(--button-text-color);
     background-color: var(--red-button-color-2);
     height: 45px;
+    text-align: center;
 }
 .filter_box_info_container{
     display: flex;

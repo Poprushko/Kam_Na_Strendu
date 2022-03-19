@@ -7,18 +7,19 @@ function getData(listOfListOfParams){
     for(var [key,value] in listOfListOfParams.entries()){
         var pa = `${key}=${value.join(",")}`;
     }}
+    console.log(req);
     const request = new Request(`/server?${req}`,{method: 'GET'});
     fetch(request)
         .then(response => {
             if (response.status === 200) {
-            return response.json();
+                return response.json();
             } else {
             throw new Error('Error');
             }
         })
         .then(response => {
             res = response;
-
+            console.log(response);
             ReactDOM.render(
                 <SearchPage />,
                 document.getElementById("app")
@@ -31,10 +32,12 @@ function getData(listOfListOfParams){
 
 function SearchPage(props){
     var all_filters=[];
-    var all_schools =  res;
+    var orig = res;
+    var [all_schools,sortChangeSchools] =  React.useState(orig);
     const [activ_page,setActivPage] = React.useState(0)
     const page_size = 3;
     var [pages_list,setPages] = React.useState([[]]);
+    var [noneSchool,setNonSchool] = React.useState(false)
     var [loading,setLoading] = React.useState(true);
 
     //#region Filters
@@ -42,10 +45,28 @@ function SearchPage(props){
     var [druh_list,setDruhList] = React.useState((p.get("druh")!=null)? p.get("druh").split(",").map((x)=>parseInt(x)):[]);
     var regions = React.useRef(regions_list);
 
-    // ПЕРЕДАТЬ В ФТЛЬТРЫ ССЫЛКУ НА ЛИСТ
-
-    React.useEffect(()=>{console.log("send to db:","region=",regions_list,"druh=",druh_list);},[regions_list,druh_list]);
+    //React.useEffect(()=>{console.log("send to db:","region=",regions_list,"druh=",druh_list);},[regions_list,druh_list,activ_page]);
     //#endregion
+
+    var sort = function(e){
+        if(e.target.value.replace(/\s/g, '') != ""){
+            setActivPage(0);
+            var filtered_list  = orig.filter((el)=>{
+                return el["name"].toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, '').search(e.target.value.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, ''))!== -1;
+            });
+            console.log(filtered_list);
+            if(filtered_list.length){
+                setNonSchool(false);
+                sortChangeSchools(filtered_list);
+            }else{setNonSchool(true)}
+        }else{
+            setNonSchool(false);
+            sortChangeSchools(orig);
+        }
+    }
+
+
+
     var reserFilters = function(e){
         setRegionList([]);
         setDruhList([]);
@@ -80,21 +101,25 @@ function SearchPage(props){
     },[all_schools]);
 
 // SchoolEmlement Close after change Page
+
     //Loader
     React.useLayoutEffect(()=>{
-        window.setTimeout(()=>{document.getElementById("loader").style.display="none"}, 500)
+        if (loading){
+            document.getElementById("loader").style.display="";
+        }else{
+            window.setTimeout(()=>{document.getElementById("loader").style.display="none"}, 400)
+        }
     },[loading]);
-
     return(
         <div>
             <div className="search_main_grid">
                 <div className="school_elements_grid">
-                    <div className="s_es_inp"><Search/></div>
-                    <div className="pages">
-                        <img src={"/assets/img/arrow.svg"} className={"img page_arrow"} style={{transform:"rotate(-90deg)",order:"1"}} onClick={() => {setActivPage((activ_page<pages_list.length-1)?activ_page+1:activ_page)}}/>
-                        <img src={"/assets/img/arrow.svg"} className={"img page_arrow"} style={{transform:"rotate(90deg)",order:"-1"}} onClick={() => {setActivPage((activ_page>0)?activ_page-1:activ_page)}}/>
+                    <div className="s_es_inp">
+                        <Search searchEnter={sort}/>
+                        <img src={"/assets/img/arrow.svg"} className={"img page_arrow"} style={{transform:"rotate(-90deg)",order:"3"}} onClick={() => {setActivPage((!noneSchool)?((activ_page<pages_list.length-1)?activ_page+1:activ_page):0)}}/>
+                        <img src={"/assets/img/arrow.svg"} className={"img page_arrow"} style={{transform:"rotate(90deg)",order:"2"}} onClick={() => {setActivPage((!noneSchool)?((activ_page>0)?activ_page-1:activ_page):0)}}/>
                     </div>
-                    {pages_list[activ_page].map((school) => <SchoolElement title={
+                    {(!noneSchool)?pages_list[activ_page].map((school) => <SchoolElement title={
                         school["name"]} 
                         rate={school["rate"]} logo={school["logo_href"]}
                         phone={school["Phone"]} email={school["Email"]}
@@ -102,13 +127,17 @@ function SearchPage(props){
                         info={school["info"]} odvetie={[]}
                         website={school["website"]} 
                         odbory={(school["Odbory"].slice(1,school["Odbory"].length)).split(";")}/>
-                    )}
+                    ):<div className="noneSchool">None Schools</div>}
+                    <div className="pages">
+                        <img src={"/assets/img/arrow.svg"} className={"img page_arrow"} style={{transform:"rotate(-90deg)",order:"1"}} onClick={() => {setActivPage((!noneSchool)?((activ_page<pages_list.length-1)?activ_page+1:activ_page):0)}}/>
+                        <img src={"/assets/img/arrow.svg"} className={"img page_arrow"} style={{transform:"rotate(90deg)",order:"-1"}} onClick={() => {setActivPage((!noneSchool)?((activ_page>0)?activ_page-1:activ_page):0)}}/>
+                    </div>
                 </div>
                 <div className={"filters_grid"}>
                     <button className="zmazat_filtre" onClick={reserFilters}>VYMAZAŤ VŠETKY FILTRE</button>
-                    <FilterBox title={"FILTROVAŤ PODĽA ODBORU"} checkedList={[]} filterList={["filter 1","filter 2","filter 3","filter 4","filter 5"]} tag={"ua"}/>
-                    <FilterBox title={"FILTROVAŤ PODĽA KRAJA"} checkedList={regions} filterList={["Banskobystrický kraj","Bratislavský kraj","Košický kraj","Nitriansky kraj","Prešovský kraj","Trenčiansky kraj","Trnavský kraj","Žilinský kraj"]} tag={"will"}/>
-                    <FilterBox title={"FILTROVAŤ PODĽA DRUHU ŠKOLY"} checkedList={druh_list} filterList={["Gymnázium","Hotelová akadémia","Konzervatórium","Obchodná akadémia","Odborná škola","Priemyselná škola","Zdravotnícka škola","Iné"]} tag={"win"}/>
+                    {/* <FilterBox title={"FILTROVAŤ PODĽA ODBORU"} checkedList={[]} filterList={["filter 1","filter 2","filter 3","filter 4","filter 5"]} tag={"ua"}/> */}
+                    <FilterBox title={"FILTROVAŤ PODĽA KRAJA"} checkedList={regions_list} setCheckedList={setRegionList} filterList={["Banskobystrický kraj","Bratislavský kraj","Košický kraj","Nitriansky kraj","Prešovský kraj","Trenčiansky kraj","Trnavský kraj","Žilinský kraj"]} tag={"will"}/>
+                    <FilterBox title={"FILTROVAŤ PODĽA DRUHU ŠKOLY"} checkedList={druh_list} setCheckedList={setDruhList} filterList={["Gymnázium","Hotelová akadémia","Konzervatórium","Obchodná akadémia","Odborná škola","Priemyselná škola","Zdravotnícka škola","Iné"]} tag={"win"}/>
                 </div>
             </div>
         </div>
@@ -154,26 +183,30 @@ function SchoolElement(props){
         </div>
     );
 }
-// <FilterBox title={} checkedList={} filterList={} tag={""}/>
+// <FilterBox title={} checkedList={} setCheckedList={} filterList={} tag={""}/>
 function FilterBox(props){
-    const checkedList = React.useRef(props.checkedList);
+    const checkedList = props.checkedList;
     React.useLayoutEffect(() => {    
-        for(let i=0;i<checkedList.current.length;i++)
-        {
-            console.log(checkedList.current[i]);
-            var id = checkedList.current[i]-1+props.tag;
-            document.getElementById(id).checked = true;
+        for(let i=0;i<props.filterList.length;i++){
+            if(checkedList.indexOf(i+1)!=-1)
+            {
+                document.getElementById(i+props.tag).checked = true;
+            }else{
+                document.getElementById(i+props.tag).checked = false;
+            }
         }
-        },[]);
+        },[checkedList]);
     var click = function(e){
         var el = props.filterList.indexOf(e.target.labels[0].innerHTML)+1;
-        var is = checkedList.current.indexOf(el);
+        var is = checkedList.indexOf(el); 
         if(is == -1) { 
-            checkedList.current.push(el); 
+            checkedList.push(el);
+            props.setCheckedList(Array.from(checkedList));//checkedList.push(el); //
         } else { 
-            checkedList.current.splice(is, 1); 
+            checkedList.splice(is,1)
+            props.setCheckedList(Array.from(checkedList));//checkedList.splice(is, 1); //
         }
-        console.log(checkedList.current);
+        //console.log(checkedList);
     }
     var index = function(mes){ return(props.filterList.indexOf(mes)+props.tag); }
     return(
@@ -183,12 +216,12 @@ function FilterBox(props){
                 {props.filterList.map((el) => <div className="filter_element">
                     <label className={"label_filter"} for={index(el)}>{el}</label>
                     <input className={"check_box_filter"} type="checkbox" id={index(el)} onClick={click}/>
-                    </div>)}
+                </div>)}
             </div>
         </div>
     );
 }
-// <Search searchEnter={Enter funtion}/>
+// <Search searchEnter={Enter funtion} searchOnCanhe{}/>
 function Search(props){
 
     const ref = React.useRef();
@@ -205,7 +238,7 @@ function Search(props){
     return(
         <div className={"search_container"} style={(hasFocus)?cf:c}  onClick={() => {document.getElementById('search-input').focus();}}>
             <input id={"search-input"} className={"search-input"} placeholder={"VYHLADAT SKOLU"}
-            onKeyUp={searchEnter} 
+            onKeyUp={props.searchEnter} onChange={props.searchOnCanhe}
             ref={ref} onFocus={() => setFocus(true)} onBlur={() => setFocus(false) }/>
             <img className={"search-img img"} src={"/assets/img/search-glass.svg"}/>
         </div>
@@ -213,6 +246,7 @@ function Search(props){
 }
 
 //#endregion [p.get("region").split(","),p.get("druh").split(",")]
-console.log((p.get("region")!=null)? {"region":p.get("region").split(",")}:null);
+
+//console.log((p.get("region")!=null)? {"region":p.get("region").split(",")}:null);
 //console.log();
 window.onload=getData();
