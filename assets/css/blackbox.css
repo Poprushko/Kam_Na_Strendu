@@ -1,0 +1,39 @@
+.inst_img{
+    height: 40px !important;
+    width: 40px !important;
+}
+.insta_container{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+}
+.insta_container a{
+    color: #fff;
+    font-weight: bold;
+    font-size: 20px;
+}
+.insta_grid{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding: 10px;
+    justify-content: center;
+}
+.main_grid{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.bb_title{
+    font-weight: bold;
+    font-size: 35px;
+    color: var(--red-text-color)
+}
+#blackBox{
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}

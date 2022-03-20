@@ -30,9 +30,10 @@ function Theme(props){
     // Input Focus Search
     //*
     var searchOnClick = function(e){
-        if (e.keyCode === 13 && e.target.value!="") {
-            console.log(e.target.value);
-           }
+        var val = e.target.value.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, '');
+        if (e.keyCode === 13 && val!="") {
+            window.location.assign(`search?s=${val}`);
+        }
     }
     //*/
 
@@ -78,6 +79,7 @@ function Theme(props){
         </div>
     );
 }
+
 function Search(props){
     //React.useEffect(()=>{console.log()},[hasFocus]);
     const ref = React.useRef();

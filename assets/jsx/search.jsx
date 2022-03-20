@@ -2,13 +2,17 @@ var p = new URLSearchParams(document.location.search);
 var res = [];
 
 function getData(listOfListOfParams){
-    var req="";
+
+    var req=[];
     if(listOfListOfParams!=undefined){
-    for(var [key,value] in listOfListOfParams.entries()){
-        var pa = `${key}=${value.join(",")}`;
+    for(var key in listOfListOfParams){
+        if(listOfListOfParams[key]!="")
+        req.push(`${key}=${listOfListOfParams[key].join(",")}`);
     }}
-    console.log(req);
-    const request = new Request(`/server?${req}`,{method: 'GET'});
+    console.log(`/server?${req.join("&")}`);
+    
+
+    const request = new Request(`/server?${req.join("&")}`,{method: 'GET'});
     fetch(request)
         .then(response => {
             if (response.status === 200) {
@@ -32,11 +36,12 @@ function getData(listOfListOfParams){
 
 function SearchPage(props){
     var all_filters=[];
-    var orig = res;
-    var [all_schools,sortChangeSchools] =  React.useState(orig);
+    var orig = res;//React.useRef(res);
+    var [all_schools,setAllSchools] =  React.useState(orig);
     const [activ_page,setActivPage] = React.useState(0)
-    const page_size = 3;
+    const page_size = 15;
     var [pages_list,setPages] = React.useState([[]]);
+
     var [noneSchool,setNonSchool] = React.useState(false)
     var [loading,setLoading] = React.useState(true);
 
@@ -45,35 +50,58 @@ function SearchPage(props){
     var [druh_list,setDruhList] = React.useState((p.get("druh")!=null)? p.get("druh").split(",").map((x)=>parseInt(x)):[]);
     var regions = React.useRef(regions_list);
 
-    //React.useEffect(()=>{console.log("send to db:","region=",regions_list,"druh=",druh_list);},[regions_list,druh_list,activ_page]);
-    //#endregion
+    React.useEffect(()=>{
+        getData({"region_id":regions_list,"druh_id":druh_list});
+        //console.log("send to db:","region=",regions_list,"druh=",druh_list);
+    },[regions_list,druh_list]);
 
-    var sort = function(e){
-        if(e.target.value.replace(/\s/g, '') != ""){
-            setActivPage(0);
-            var filtered_list  = orig.filter((el)=>{
-                return el["name"].toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, '').search(e.target.value.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, ''))!== -1;
-            });
-            console.log(filtered_list);
-            if(filtered_list.length){
-                setNonSchool(false);
-                sortChangeSchools(filtered_list);
-            }else{setNonSchool(true)}
-        }else{
-            setNonSchool(false);
-            sortChangeSchools(orig);
-        }
-    }
-
-
-
-    var reserFilters = function(e){
+    var resetFilters = function(e){
+        document.getElementById("search-input").value="";
+        setNonSchool(false);
         setRegionList([]);
         setDruhList([]);
+        setAllSchools(orig);
     }
 
+    //#endregion
+
+    //#region Sort
+    React.useLayoutEffect(()=>{
+        if(p.get("s")!=null){
+            document.getElementById("search-input").value =p.get("s");
+        }
+    },[]);
+
+    function filterAllSchools(value){
+        setActivPage(0);
+        var filtered_list  = orig.filter((el)=>{
+            //console.log(el["name"].toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, ''),value.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, ''));
+            console.log(el["name"].toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, '').search(value.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, ''))!== -1);
+            return el["name"].toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, '').search(value.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, ''))!== -1;
+        });
+        console.log(filtered_list,filtered_list.length);
+        console.log(filtered_list.length);
+        if(filtered_list.length) {
+            setNonSchool(false);
+            setAllSchools(filtered_list);
+        }else {
+            console.log("none");
+            setNonSchool(true);
+        }
+    }
+    var searchOnChange = function(e){
+        if(e.target.value.replace(/\s/g, '') != ""){
+            filterAllSchools(e.target.value);
+        }else{
+            setNonSchool(false);
+            setAllSchools(orig);
+        }
+    }
+    //#endregion
+    
+    //#region createPages
     function createPages(){
-        var pages_count = Math.ceil((all_schools.length-1)/ page_size);
+        var pages_count = Math.ceil((all_schools.length)/ page_size);
         var p_list = [];
         //console.log(all_schools);
         //console.log(all_schools.length);
@@ -84,25 +112,30 @@ function SearchPage(props){
             p_list.push(page);
         }
         setPages(Array.from(p_list));
+        filterAllSchools(document.getElementById("search-input").value);
+        setLoading(false);
+        //#region debug
         //console.log(pages_list);
         // console.log(pages_count,p_list)
         //console.log("p0",pages_list[activ_page]);
         //console.log("p1",pages_list[activ_page][0]);
         //console.log("p2",pages_list[activ_page].map((school) => school["school_id"]))
+        //#endregion
     }
-    /*
-    React.useLayoutEffect(() => {
-        console.log("real:",activ_page,"/",pages_list.length,"normal:",activ_page+1,"/",pages_list.length,"logic:",activ_page,"/",pages_list.length-1);
-    },[activ_page]);
-    //*/
     React.useEffect(() => {
         createPages();
-        setLoading(false);
     },[all_schools]);
+    React.useEffect(()=>{
+        if(orig.length){
+        setAllSchools(orig);
+        setNonSchool(false);
+        }else{setNonSchool(true);}
+    },[orig]);
+    //#endregion
 
-// SchoolEmlement Close after change Page
+    //                                                  SchoolEmlement Close after change Page
 
-    //Loader
+    //#region LOADER
     React.useLayoutEffect(()=>{
         if (loading){
             document.getElementById("loader").style.display="";
@@ -110,15 +143,22 @@ function SearchPage(props){
             window.setTimeout(()=>{document.getElementById("loader").style.display="none"}, 400)
         }
     },[loading]);
+    //#endregion
+
     return(
         <div>
             <div className="search_main_grid">
                 <div className="school_elements_grid">
+                    
                     <div className="s_es_inp">
-                        <Search searchEnter={sort}/>
+                        <SearchSort searchOnChange={searchOnChange}startVal={(p.get("s")!=null)? p.get("s"):""}/>
+                        <div>
+                            Page:{activ_page+1}/{(!noneSchool)?pages_list.length:1}<br/>Schools count:{(!noneSchool)?all_schools.length:0}
+                        </div>
                         <img src={"/assets/img/arrow.svg"} className={"img page_arrow"} style={{transform:"rotate(-90deg)",order:"3"}} onClick={() => {setActivPage((!noneSchool)?((activ_page<pages_list.length-1)?activ_page+1:activ_page):0)}}/>
                         <img src={"/assets/img/arrow.svg"} className={"img page_arrow"} style={{transform:"rotate(90deg)",order:"2"}} onClick={() => {setActivPage((!noneSchool)?((activ_page>0)?activ_page-1:activ_page):0)}}/>
                     </div>
+
                     {(!noneSchool)?pages_list[activ_page].map((school) => <SchoolElement title={
                         school["name"]} 
                         rate={school["rate"]} logo={school["logo_href"]}
@@ -128,23 +168,31 @@ function SearchPage(props){
                         website={school["website"]} 
                         odbory={(school["Odbory"].slice(1,school["Odbory"].length)).split(";")}/>
                     ):<div className="noneSchool">None Schools</div>}
+
                     <div className="pages">
                         <img src={"/assets/img/arrow.svg"} className={"img page_arrow"} style={{transform:"rotate(-90deg)",order:"1"}} onClick={() => {setActivPage((!noneSchool)?((activ_page<pages_list.length-1)?activ_page+1:activ_page):0)}}/>
                         <img src={"/assets/img/arrow.svg"} className={"img page_arrow"} style={{transform:"rotate(90deg)",order:"-1"}} onClick={() => {setActivPage((!noneSchool)?((activ_page>0)?activ_page-1:activ_page):0)}}/>
                     </div>
+
                 </div>
+
                 <div className={"filters_grid"}>
-                    <button className="zmazat_filtre" onClick={reserFilters}>VYMAZAŤ VŠETKY FILTRE</button>
+
+                    <button className="zmazat_filtre" onClick={resetFilters}>VYMAZAŤ VŠETKY FILTRE</button>
                     {/* <FilterBox title={"FILTROVAŤ PODĽA ODBORU"} checkedList={[]} filterList={["filter 1","filter 2","filter 3","filter 4","filter 5"]} tag={"ua"}/> */}
                     <FilterBox title={"FILTROVAŤ PODĽA KRAJA"} checkedList={regions_list} setCheckedList={setRegionList} filterList={["Banskobystrický kraj","Bratislavský kraj","Košický kraj","Nitriansky kraj","Prešovský kraj","Trenčiansky kraj","Trnavský kraj","Žilinský kraj"]} tag={"will"}/>
                     <FilterBox title={"FILTROVAŤ PODĽA DRUHU ŠKOLY"} checkedList={druh_list} setCheckedList={setDruhList} filterList={["Gymnázium","Hotelová akadémia","Konzervatórium","Obchodná akadémia","Odborná škola","Priemyselná škola","Zdravotnícka škola","Iné"]} tag={"win"}/>
+                
                 </div>
+            
             </div>
         </div>
     );
 }
+
 //#region Elements
 
+//#region SchoolElement
 //<SchoolElement title={} rate={} logo={} phone={} email={} addassetss={}info={} odvetie={} odbory={}/>
 function SchoolElement(props){
     const arrow = React.useRef(null);
@@ -183,6 +231,9 @@ function SchoolElement(props){
         </div>
     );
 }
+//#endregion
+
+//#region FilterBox 
 // <FilterBox title={} checkedList={} setCheckedList={} filterList={} tag={""}/>
 function FilterBox(props){
     const checkedList = props.checkedList;
@@ -221,12 +272,14 @@ function FilterBox(props){
         </div>
     );
 }
+//#endregion
+
+//#region Search
 // <Search searchEnter={Enter funtion} searchOnCanhe{}/>
-function Search(props){
+function SearchSort(props){
 
     const ref = React.useRef();
     const [hasFocus, setFocus] = React.useState(false);
-
     React.useEffect(() => {
         if (document.hasFocus() && ref.current.contains(document.activeElement)) {
           setFocus(true);
@@ -234,19 +287,21 @@ function Search(props){
       }, []);
     
     var c = {border:"var(--border-rad) solid var(--border-color)"}
-    var cf = {border:"var(--border-rad) solid var(--search-shadow-color)",boxShadow:"0 0 10px 1px var(--search-shadow-color)"}
+    var cf = {border:"var(--border-rad) solid var(--border-color)",boxShadow:"0 0 10px 1px var(--search-shadow-color)"}
     return(
         <div className={"search_container"} style={(hasFocus)?cf:c}  onClick={() => {document.getElementById('search-input').focus();}}>
             <input id={"search-input"} className={"search-input"} placeholder={"VYHLADAT SKOLU"}
-            onKeyUp={props.searchEnter} onChange={props.searchOnCanhe}
+            onKeyUp={props.searchEnter} onChange={props.searchOnChange}
             ref={ref} onFocus={() => setFocus(true)} onBlur={() => setFocus(false) }/>
             <img className={"search-img img"} src={"/assets/img/search-glass.svg"}/>
         </div>
     );
 }
+//#endregion
 
-//#endregion [p.get("region").split(","),p.get("druh").split(",")]
+//#endregion 
+
+window.onload=getData();
+
 
 //console.log((p.get("region")!=null)? {"region":p.get("region").split(",")}:null);
-//console.log();
-window.onload=getData();
