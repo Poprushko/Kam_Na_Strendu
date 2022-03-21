@@ -9,6 +9,7 @@
 }
 .s_e_main_grid{
     display: flex;
+    align-items: center;
     justify-content:space-between;
     flex-direction: row;
     gap: 15px;

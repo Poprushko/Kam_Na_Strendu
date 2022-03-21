@@ -38,6 +38,7 @@ function SearchPage(props){
     var all_filters=[];
     var orig = res;//React.useRef(res);
     var [all_schools,setAllSchools] =  React.useState(orig);
+    var [all_schools_count,setSchoolsCount] =  React.useState(all_schools.length);
     const [activ_page,setActivPage] = React.useState(0)
     const page_size = 15;
     var [pages_list,setPages] = React.useState([[]]);
@@ -48,9 +49,9 @@ function SearchPage(props){
     //#region Filters
     var [regions_list,setRegionList] = React.useState((p.get("region")!=null)? p.get("region").split(",").map((x)=>parseInt(x)):[]);
     var [druh_list,setDruhList] = React.useState((p.get("druh")!=null)? p.get("druh").split(",").map((x)=>parseInt(x)):[]);
-    var regions = React.useRef(regions_list);
 
     React.useEffect(()=>{
+        setLoading(true);
         getData({"region_id":regions_list,"druh_id":druh_list});
         //console.log("send to db:","region=",regions_list,"druh=",druh_list);
     },[regions_list,druh_list]);
@@ -68,51 +69,48 @@ function SearchPage(props){
     //#region Sort
     React.useLayoutEffect(()=>{
         if(p.get("s")!=null){
-            document.getElementById("search-input").value =p.get("s");
+            document.getElementById("search-input").value = p.get("s");
         }
     },[]);
-
     function filterAllSchools(value){
-        setActivPage(0);
-        var filtered_list  = orig.filter((el)=>{
-            //console.log(el["name"].toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, ''),value.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, ''));
-            console.log(el["name"].toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, '').search(value.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, ''))!== -1);
-            return el["name"].toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, '').search(value.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, ''))!== -1;
-        });
-        console.log(filtered_list,filtered_list.length);
-        console.log(filtered_list.length);
-        if(filtered_list.length) {
-            setNonSchool(false);
-            setAllSchools(filtered_list);
-        }else {
-            console.log("none");
-            setNonSchool(true);
-        }
-    }
-    var searchOnChange = function(e){
-        if(e.target.value.replace(/\s/g, '') != ""){
-            filterAllSchools(e.target.value);
+        if(value.replace(/\s/g, '') != ""){
+            var filtered_list  = orig.filter((el)=>{
+                //console.log(el["name"].toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, ''),value.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, ''));
+                console.log(el["name"].toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, '').search(value.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, ''))!== -1);
+                return el["name"].toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, '').search(value.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, ''))!== -1;
+            });
+            console.log(filtered_list,filtered_list.length);
+            console.log(filtered_list.length);
+            if(filtered_list.length) {
+                setNonSchool(false);
+                return filtered_list;
+            }else {
+                setNonSchool(true);
+                return orig;
+            }
         }else{
             setNonSchool(false);
-            setAllSchools(orig);
+            return orig;
         }
     }
     //#endregion
     
     //#region createPages
     function createPages(){
-        var pages_count = Math.ceil((all_schools.length)/ page_size);
+        setActivPage(0);
+        var filtered_schools = filterAllSchools(document.getElementById("search-input").value);
+        setSchoolsCount(filtered_schools.length);
+        var pages_count = Math.ceil((filtered_schools.length)/ page_size);
         var p_list = [];
         //console.log(all_schools);
         //console.log(all_schools.length);
         for(let i=0;i<pages_count;i++){
-            var schools = Array.from(all_schools);
-            var page = schools.splice((i*page_size), Math.min((all_schools.length-(i*page_size)),page_size));
+            var schools = Array.from(filtered_schools);
+            var page = schools.splice((i*page_size), Math.min((filtered_schools.length-(i*page_size)),page_size));
             //console.log(page);
             p_list.push(page);
         }
         setPages(Array.from(p_list));
-        filterAllSchools(document.getElementById("search-input").value);
         setLoading(false);
         //#region debug
         //console.log(pages_list);
@@ -151,9 +149,9 @@ function SearchPage(props){
                 <div className="school_elements_grid">
                     
                     <div className="s_es_inp">
-                        <SearchSort searchOnChange={searchOnChange}startVal={(p.get("s")!=null)? p.get("s"):""}/>
+                        <SearchSort searchOnChange={(e)=>{createPages();}}startVal={(p.get("s")!=null)? p.get("s"):""}/>
                         <div>
-                            Page:{activ_page+1}/{(!noneSchool)?pages_list.length:1}<br/>Schools count:{(!noneSchool)?all_schools.length:0}
+                            Page:{activ_page+1}/{(!noneSchool)?pages_list.length:1}<br/>Schools count:{(!noneSchool)?all_schools_count:0}
                         </div>
                         <img src={"/assets/img/arrow.svg"} className={"img page_arrow"} style={{transform:"rotate(-90deg)",order:"3"}} onClick={() => {setActivPage((!noneSchool)?((activ_page<pages_list.length-1)?activ_page+1:activ_page):0)}}/>
                         <img src={"/assets/img/arrow.svg"} className={"img page_arrow"} style={{transform:"rotate(90deg)",order:"2"}} onClick={() => {setActivPage((!noneSchool)?((activ_page>0)?activ_page-1:activ_page):0)}}/>
@@ -209,16 +207,16 @@ function SchoolElement(props){
     }
     return(
         <div className={"school_element"}>
-            <div className={'s_e_main_grid'}>
-                <img src={props.logo} className={"s_e_logo"} onClick={showInfo}/>
+            <div className={'s_e_main_grid'} onClick={showInfo}>
+                <img src={props.logo} className={"s_e_logo"}/>
                 <div className={"s_e_title_grid"}>
-                    <a className={'s_e_title'} onClick={showInfo}>{props.title}</a>
+                    <a className={'s_e_title'}>{props.title}</a>
                     <div className={"s_e_rate_container"}><img className={"img rate-img"} src="/assets/img/star.svg"/><a className={"s_e_rate"}>{props.rate.toFixed(1)}</a></div>
-                    <div style={{display:disp}}><a dangerouslySetInnerHTML={{__html: props.info}}></a></div>
                 </div>
-                <img src="/assets/img/arrow.svg" className={"arrow-img img"} ref={arrow} onClick={showInfo}/>
+                <img src="/assets/img/arrow.svg" className={"arrow-img img"} ref={arrow}/>
             </div>
             <div style={{display:disp}} className={'s_e_second_grid'}>
+                <div style={{display:disp}}><a dangerouslySetInnerHTML={{__html: props.info}}></a></div>
                 <div className="school_element_info_grid">
                     <div className={"s_e_about_conatiner"}><img className={"img info_img"} src="/assets/img/phone.svg"/>   <a className={"about_text"}>{props.phone}</a></div>
                     <div className={"s_e_about_conatiner"}><img className={"img info_img"} src="/assets/img/email.svg"/>   <a className={"about_text"}>{props.email}</a></div>
