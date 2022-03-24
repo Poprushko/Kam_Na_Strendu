@@ -1,23 +1,23 @@
-#app {
-    margin-inline: 50px;
+#app{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
 }
 /*#region School Title */
 .school_title_main_grid{
-    margin-top: 3%;
-    display: inline-flex;
-    margin-inline: 50px;
+    display: flex;
+    gap: 75px;
 }
 
 .school_element_logo{
-    width: 200px;
+    width: 175px;
 }
 
 .school_title_info_grid {
     display: flex;
     flex-direction: column;
     justify-content:center;
-    align-items: center;
-    width: 1200px;
+    width: 900px;
 }
 
 .school_title_info_name{
@@ -25,14 +25,14 @@
     font-weight: 900;
     max-width: 950px;
     color: var(--red-text-color-2);
-    word-break: break-all;
+    word-break: break-word;
 }
 
 .school_title_info_rate{
     display: flex;
-    align-items: flex-end;
     justify-content: flex-end;
     align-items: center;
+    margin-block: 10px;
 }
 
 .school_title_info_rate img{
@@ -46,6 +46,7 @@
 .school_title_info_contact_grid{
     display: flex;
     flex-direction: row;
+    gap: 20px;
 }
 
 .school_title_info_contact_container{
@@ -53,7 +54,6 @@
     flex-direction: row;
     flex-wrap: nowrap;
     align-items: center;
-    margin-left: 20px;
 }
 
 .school_title_info_contact_container img{
@@ -69,20 +69,22 @@
 /*#region Info */
 .school_about_flex{
     display: flex;
-    padding-inline: 100px;
     font-size: x-large;
     font-weight: 600;
     line-height: 1.3;
-    margin-bottom: 5%;
 }
 
 .school_about_info{
-    min-width: 920px;
-    margin-inline: 10px;
+    width: 1005px;
 }
 
 .school_info{
-    margin-top: 30px;
+    margin-top: 24px;
+    margin-right: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
 }
 .school_info_website{
     font-size: var(--text-size-big);

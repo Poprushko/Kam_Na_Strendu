@@ -70,7 +70,7 @@
 #blackBox{
     display: flex;
     justify-content: center;
-    padding: 10px;
+    padding-block: 10px;
 }
 .no_war{
     color: var(--button-text-color);
