@@ -1,13 +1,48 @@
 .inst_img{
     height: 40px !important;
     width: 40px !important;
+    animation: mymoveb 1s;
+    animation-delay: 0s;
+    animation-fill-mode: both;
+    --a: radial-gradient(circle at 30% 107%, #fccc63 0%, #fbad50 5%, #fd5949 29%, #cd486b 45%, #bc2a8d 60%, #8a3ab9 90%, #4c68d7 100%);
 }
+/**
+.insta_img{
+    box-shadow: 0px 0px 0px 2px #000 inset;
+    border: 2px solid #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    width: 40px;
+    animation: mymoveb2 1s;
+    animation-delay: 0s;
+    animation-fill-mode: both;
+                                                    radial-gradient(circle at 30% 107%, rgba(252,204,99,1) 0%, rgba(251,173,80,1) 5%, rgba(253,89,73,1) 29%, rgba(205,72,107,1) 45%, rgba(188,42,141,1) 60%, rgba(138,58,185,1) 90%, rgba(76,104,215,1) 100%); 
+    background-image:  url("/assets/img/inst_.svg"),radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%,#d6249f 60%,#285AEB 90%);
+    background-blend-mode: multiply;
+    display: none;
+}/**/
+
 .insta_container{
+    cursor: pointer;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    gap: 5px;
+    gap: 7px;
+}/**
+.insta_container:hover .insta_img{
+    animation-direction:alternate;
+    animation: mymove2 1s;
+    animation-delay: 0s;
+    animation-fill-mode: both;
+}/**/
+.insta_container:hover .inst_img{
+    animation-direction:alternate;
+    animation: mymove 1s;
+    animation-delay: 0s;
+    animation-fill-mode: both;
 }
 .insta_container a{
     color: #fff;
@@ -17,7 +52,7 @@
 .insta_grid{
     display: flex;
     flex-direction: row;
-    gap: 10px;
+    gap: 14px;
     padding: 10px;
     justify-content: center;
 }
@@ -37,3 +72,24 @@
     justify-content: center;
     padding: 10px;
 }
+.no_war{
+    color: var(--button-text-color);
+    font-weight: bold;
+}
+@keyframes mymove {
+    from {transform: rotate(0deg);filter: brightness(700%);}
+    to {transform: rotate(360deg);filter: brightness(100%);}
+}
+@keyframes mymoveb {
+    from {transform: rotate(360deg);filter: brightness(100%);}
+    to {transform: rotate(0deg);filter: brightness(700%); }
+}
+/*
+@keyframes mymove2 {
+    from {transform: rotate(0deg); filter: brightness(550%);}
+    to {transform: rotate(360deg);filter: brightness(100%);}
+}
+@keyframes mymoveb2 {
+    from {transform: rotate(360deg);filter: brightness(100%);}
+    to {transform: rotate(0deg);filter: brightness(550%);}
+}*/

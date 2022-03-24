@@ -7,7 +7,12 @@
     border: var(--border-rad) solid var(--border-color);
     width: 1000px;
 }
+.school_element:hover{
+    border: var(--border-rad) solid var(--red-button-hover-color-2);
+    box-shadow: 0px 0px 0px 3px var(--red-button-hover-color-2);
+}
 .s_e_main_grid{
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content:space-between;
@@ -26,13 +31,25 @@
     grid-template-columns: 100%;
     grid-template-rows: max-content max-content max-content;
 }
+.school_element_info_grid{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 8px;
+}
 /**/
 .s_e_about_conatiner{
+    cursor: pointer;
     display: flex;
     flex-direction: row;
-    gap: 8px;
+    gap: 15px;
     justify-content: flex-start;
     align-items:center;
+    width: max-content;
+}
+.s_e_about_conatiner:hover > *{
+    filter: invert(39%) sepia(72%) saturate(906%) hue-rotate(318deg) brightness(84%) contrast(86%);
+    color: #ca4d51;
 }
 .s_e_rate_container{
     display: flex;
@@ -41,6 +58,9 @@
     align-items: center;
     gap: 10px;
 }
+.s_e_rate{
+    font-size: 20px;
+}
 /* IMG */
 .arrow-img{
     height: 35px;
@@ -48,8 +68,8 @@
     transform:rotate(-90deg);
 }
 .rate-img{
-    height: 15px;
-    width: 15px;
+    height: 20px;
+    width: 20px;
 }
 .info_img{
     height: 30px;
@@ -69,7 +89,8 @@
     border: 0px;
     padding: 0.5em;
     padding-inline: 1.5em;
-    height: 40px;
+    height: 50px;
+    cursor: pointer;
 }
 .s_e_button_viac:hover{
     background-color: var(--red-button-hover-color-2);
@@ -78,4 +99,7 @@
 .s_e_title{
     font-size: 25px;
     font-weight: bold;
+}
+.about_text{
+    filter: none !important;
 }

@@ -1,13 +1,27 @@
-.check_box_filter{
-    outline: none;
-    border-radius: 0px;
-    border: var(--border-rad) solid var(--border-color);
+.check_box_filter {
+    pointer-events: none;
+    order: 10;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 1.4em;
+    height: 1.4em;
+    border: 0.15em solid currentColor;
+    display: grid;
+    place-content: center;
 }
-.check_box_filter:checked + .label_filter{
-    background-color: green;
+.check_box_filter::before {
+    content: "";
+    width: 0.7em;
+    height: 0.7em;
+    transform: scale(0);
+    transition: 150ms transform ease-in-out;
+    box-shadow: inset 1em 1em var(--form-control-color);
 }
-.check_box_filter:not(:checked) + .label_filter{
-    background-color: red;
+.check_box_filter:checked::before{
+    transform: scale(1) !important;
+}
+.check_box_filter:checked+.label_filter{
+        text-decoration: underline;
 }
 .filter_box{
     width: max-content;
@@ -17,6 +31,9 @@
     gap: 8px;
     padding: 10px;
     border: var(--border-rad) solid var(--border-color);
+}
+.filter_box:hover{
+    box-shadow: 0px 0px 0px 2px var(--border-color);
 }
 .filter_box_title{
     font-weight: bold;
@@ -28,16 +45,20 @@
     background-color: var(--red-button-color-2);
     height: 45px;
     text-align: center;
+    padding-inline: 1em;
+    padding-block: 0.3em;
 }
 .filter_box_info_container{
     display: flex;
     flex-direction: column;
+    gap: 5px;
     /*justify-items: center;*/
     margin-top: 20px;
     margin-bottom: 50px;
     margin-inline: 20px;
 }
 .filter_element{
+    cursor: pointer;
     align-items: center;
     display: flex;
     flex-direction: row;
@@ -47,7 +68,12 @@
 }
 /*  */
 .label_filter{
+    pointer-events: none;
+    order: -10;
     display: inline;
     font-size: 20px;
     font-weight: 400;
+}
+.filter_element:hover .label_filter{
+    font-weight: bold;
 }

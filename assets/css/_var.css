@@ -15,7 +15,9 @@
         --p1-text-mr: 20%; 
         --text-font-family: 'Poppins', sans-serif;
         --border-rad: 2px;
+        --border-rad-hover: 4px;
         --gap-title-filters-mainpage: 13px;
+        --search-arrow-height-p2: 55px;
     }
     @media only screen and (max-width: 1500px) {#man {display: none} div{--p1-text-mr: 0px; } }
     

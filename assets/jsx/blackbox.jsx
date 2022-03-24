@@ -7,14 +7,15 @@ function BlackBox(props){
                 <Insta insta={"@sergiy_f_"} url={"https://instagram.com/sergiy_f_/"}/>
                 <Insta insta={"@laurrrenxx"} url={"https://instagram.com/laurrrenxx/"}/>
             </div>
-            <a>NO WAR IN UKRAINE</a>
+            <a className={"no_war"}>NO WAR IN UKRAINE</a>
         </div>
     );
 }
 function Insta(props){
     return(
         <div className={"insta_container"} onClick={()=>{window.open(props.url);}}>
-                <img src="/assets/img/inst.svg" style={{filter:"invert(100%)"}} className={"inst_img"}/>
+                <div className="insta_img"></div>
+                <img src="/assets/img/inst_.svg" style={{filter:"invert(100%)"}} className={"inst_img"}/>
                 <a>{props.insta}</a>
         </div>
     );

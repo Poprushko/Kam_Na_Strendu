@@ -2,7 +2,7 @@ var kraj = ["Banskobystrický kraj","Bratislavský kraj","Košický kraj","Nitri
 var druh = ["Gymnázium","Hotelová akadémia","Konzervatórium","Obchodná akadémia","Odborná škola","Priemyselná škola","Zdravotnícka škola","Iné"];
 function Main(props){
     var searchOnClick = function(e){
-        var val = e.target.value.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, '');
+        var val = e.target.value;
         if (e.keyCode === 13 && val!="") {
             window.location.assign(`search?s=${val}`);
         }
@@ -46,7 +46,7 @@ function SelectFilters(props) {
     return ( <div className={"test"}>
             <div className={'selectGridMain'}>
                 <SelOpt title={"KRAJ"} list={kraj} clicked={selectedRegion} img={"/assets/img/mesto.png"} tag={"sqe"} dir={"row"}/>
-                <SelOpt title={"DRUHY"} list={druh} clicked={selectedDruh} img={"/assets/img/kniha.png"} tag={"awd"} dir={"row-reverse"}/>
+                <SelOpt title={"TYPY"} list={druh} clicked={selectedDruh} img={"/assets/img/kniha.png"} tag={"awd"} dir={"row-reverse"}/>
             </div>
             <button className={"buttonSearch"} onClick={send}>VYHĽADAŤ</button>
     </div>);

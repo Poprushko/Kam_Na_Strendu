@@ -30,3 +30,6 @@ img{
 input{
     background-color: var(--search-background-color);
 }
+button{
+    cursor: pointer;
+}

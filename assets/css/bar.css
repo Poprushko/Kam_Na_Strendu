@@ -1,8 +1,10 @@
 .theme_switch{
+    cursor: pointer;
     height: var(--sw-size);
     width: var(--sw-size);
 }
 #logo{
+    cursor: pointer;
     order: -10;
     height: auto;
     width: var(--logo-size);

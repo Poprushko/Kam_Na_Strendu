@@ -5,43 +5,34 @@ function Theme(props){
 
     var prefers_theme = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-    const [dark, changeTheme] = React.useState(prefers_theme);
+    const [dark, changeTheme] = React.useState((getCookie("KrokVpredPrefTheme")!="")?((getCookie("KrokVpredPrefTheme")=="true")?true:false):prefers_theme);
     const [activ_dark_theme, setActivTheme] = React.useState(prefers_theme);
-    const [uChange,userChange] = React.useState(false);
     // useRef
     const theme = React.useRef(document.getElementById("themeLink"));
     const logo = React.useRef();
     const themeSwitch = React.useRef(null);
-
+    
     //#region OnClick 
-    // Search
-    var searchOnClick=function(e){
-        if (e.keyCode === 13) {
-            e.preventDefault();
-            console.log(e.target.value);
-           }
-    }
     // Logo
     var openMainPage = function(e){
         window.location.assign("/");
     }
-    //#endregion
     
-    // Input Focus Search
-    //*
+    // Search
     var searchOnClick = function(e){
-        var val = e.target.value.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/\s/g, '');
+        var val;
         if (e.keyCode === 13 && val!="") {
             window.location.assign(`search?s=${val}`);
         }
     }
-    //*/
+    //#endregion
 
     //#region Themes
     function SetDark(){
         if(!prefers_theme||!activ_dark_theme){
             //console.log("dark",prefers_theme,dark,activ_dark_theme)
             setActivTheme(true);
+            setCookie(true);
             theme.current.href="/assets/css/_dark_theme.css";
         }
         themeSwitch.current.style.filter="invert(100%)";
@@ -51,6 +42,7 @@ function Theme(props){
         if(prefers_theme||activ_dark_theme){
             //console.log("light",prefers_theme,dark,activ_dark_theme)
             setActivTheme(false);
+            setCookie(false);
             theme.current.href="/assets/css/_light_theme.css";
         }
         themeSwitch.current.style.filter="";
@@ -65,10 +57,33 @@ function Theme(props){
         }
     },[dark]);
     var switchTheme = function(e){
-        userChange(true);
         (themeSwitch.current.style.filter == "invert(100%)")? changeTheme(false):changeTheme(true);
     }
     //#endregion
+
+    //#region Cookie
+    function setCookie(cvalue) {
+        const d = new Date();
+        d.setTime(d.getTime() + (365*24*60*60*1000));
+        let expires = "expires="+ d.toUTCString();
+        document.cookie = "KrokVpredPrefTheme" + "=" + `${cvalue}` + ";" + expires + ";path=/";
+    }
+    function getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for(let i = 0; i <ca.length; i++) {
+          let c = ca[i];
+          while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+          }
+        }
+        return "";
+    }
+    //#endregion Cookie
     return(
         <div className={"bar"}>
             <img id={"logo"} src={"/assets/img/logo.svg"} ref={logo} onClick={openMainPage}/>

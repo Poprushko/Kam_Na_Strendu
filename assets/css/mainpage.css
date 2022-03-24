@@ -16,6 +16,10 @@
 /* PAGE 2 FILTERS */
 .selectItem{
     width: max-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 .selectGrid{
     margin-top: var(--gap-title-filters-mainpage);
@@ -38,6 +42,7 @@
     align-items: center;
 }
 .elToSel{
+    cursor: pointer;
     font-family: var(--text-font-family);
     color: var(--text-color);
     font-size: var(--text-item-size);
@@ -62,8 +67,6 @@ input[type=checkbox]{
     color: var(--text-color);
     font-weight: 700;
     font-size: var(--text-size-title-p2);
-    margin-left: 5%;
-    margin-bottom: 2%;
 }
 .buttonSearch{
     color: var(--button-text-color);
